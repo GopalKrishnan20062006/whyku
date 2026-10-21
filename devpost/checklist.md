@@ -9,7 +9,7 @@ Build mode: fast
 
 ## Slices
 
-- [ ] **1. Solver proves singles from the current grid**
+- [x] **1. Solver proves singles from the current grid**
   Becomes usable: A runnable Python engine returns candidates, conflicts, mismatch status, completion status, and only independently verified naked or hidden single records.
   Why now: The deterministic engine is Whyku's unique kernel and highest correctness risk; independent pytest evidence can validate it before UI or AI work.
   PRD ref: `prd.md > Features and Behavior`, `prd.md > States and Boundaries`
@@ -74,3 +74,5 @@ Reflection: [offered/answered/declined/already covered]
 Activity mode: [record after build]
 
 ## Revisions
+
+- Added complete hidden-single position blockers and documented deterministic naked/hidden selection order after slice review identified missing proof detail; expanded regression tests and confirmed the solver suite passes.

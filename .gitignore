@@ -5,3 +5,9 @@
 .env
 .env.*
 !.env.example
+
+# Python local environment and test artifacts
+/backend/.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
