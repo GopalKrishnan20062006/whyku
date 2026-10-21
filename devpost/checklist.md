@@ -55,28 +55,29 @@ Build mode: fast
 - [x] Slice 2 API behavior reviewed before its commit and before starting the React slice.
 - [x] Early usable board explored after slice 3; learner approved the board during browser review.
 - [x] Slice 4 hint and fallback behavior reviewed before its commit and final review.
-- [ ] Final kick-the-tires exploration and feedback completed.
+- [x] Final kick-the-tires review completed; learner confirmed ready as-is and requested no additional changes.
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — feedback resolved and learner confirms ready to ship
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/answered/declined/not applicable as appropriate
+- [x] Learning activity complete — focused alternative, prior practice connected, or brief recap
+- [x] Optional edit and transfer reflection addressed — offered/answered/declined/not applicable as appropriate
 - [x] `devpost/app-map.html` generated from finished code, checked in Chrome, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: Pending final learner review and learning wrap-up; earlier checkpoints exercised solver evidence, API mismatch blocking/recovery, and the full browser hint flow.
-Route and stops: App map reference route: `frontend/src/App.jsx`, `frontend/src/api.js`, `backend/app/main.py`, `backend/app/sudoku/engine.py`, `backend/app/sudoku/singles.py`, and `backend/app/explanations/service.py`.
-Edit outcome: No optional code edit made.
-Reflection: Pending final wrap-up.
-Activity mode: Focused evidence recap for an experienced plan-first learner; pending learner reflection.
+Activity and evidence: Focused evidence recap connected the learner's stated trust boundary to the implementation and checks: engine tests verify deductions from the current grid, API tests cover mismatch blocking and provider fallback, frontend tests render the returned record, and the Chrome flow showed evidence and a refreshed hint after entry.
+Route and stops: Reference route (not an interactive code tour) in `devpost/app-map.html`: `frontend/src/App.jsx` → `frontend/src/api.js` → `backend/app/main.py` → `backend/app/sudoku/engine.py` / `singles.py` → `backend/app/explanations/service.py`.
+Edit outcome: Not applicable; the focused evidence recap needed no code edit.
+Reflection: Already covered by the learner's planning decisions about solver truth, backend validation, and approved explanation clauses; final review reiterated explanation trust, hint clarity, and mismatch edge cases. No additional transfer question was needed.
+Activity mode: Focused evidence recap for an experienced plan-first learner.
 
 ## Revisions
 
 - Slice 3 browser review was reported passed by the learner and approved. Six Vitest checks pass, the Vite production build succeeds, and the local Vite proxy served all five puzzles and backend candidates.
 - Slice 4 verification: backend `.venv\Scripts\python.exe -m pytest` passed (34 tests, 1 recorded Starlette/httpx deprecation warning); frontend `npm test -- --run` passed (8 tests); `npm run build` passed. Automated tests use mocks. The live Chrome flow used `EXPLANATION_PROVIDER=template`; API logs show the analysis, hint, and explanation requests without Gemini network calls. Mismatch blocking/recovery was also rechecked in the browser. `git diff --check` passed.
 - Final repository check: all four slice commits are present (`191c602`, `7ff4f7f`, `d633a73`, `2be64bc`). The tracked tree had no uncommitted changes before completion docs; unrelated untracked `.agents/`, `.claude/`, `agent/`, and `skills-lock.json` remain untouched. `backend/.env` does not exist and is ignored; no API-key pattern was found in tracked files or reachable Git history. `devpost/learner-profile.md` is not tracked. `devpost/app-map.html` was opened in Chrome and reviewed; its code reference is snapshot `2be64bc`.
+- Final review: learner confirmed "Ready as-is" and requested no changes. The Starlette/httpx deprecation remains documented for follow-up.
 - Slice 2 manual API checks passed in template mode; `pytest` passed (34 tests). Recorded Starlette deprecation warning: TestClient currently uses httpx; investigate the recommended `httpx2` migration during cleanup rather than suppressing it.
 - Added complete hidden-single position blockers and documented deterministic naked/hidden selection order after slice review identified missing proof detail; expanded regression tests and confirmed the solver suite passes.
