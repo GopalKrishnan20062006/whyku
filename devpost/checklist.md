@@ -39,14 +39,14 @@ Build mode: fast
   Learner check: Learner confirmed the browser review passed: puzzle switching resets entries, keyboard and number-pad entry retain selection, candidates refresh after erasure, mismatches are flagged and block hints without revealing answers, givens stay locked, and cell/unit highlights are clear.
   Commit: `Build playable backend-driven grid`
 
-- [ ] **4. Evidence ladder and end-to-end demo**
+- [x] **4. Evidence ladder and end-to-end demo**
   Becomes usable: A player can reveal the five hint levels, inspect technique-specific evidence, and receive verified AI wording or a labeled offline template in the completed demo flow.
   Why now: With the solver, API/explanation service, and playable grid reviewed, the ladder can render deduction evidence without deciding or inventing moves.
   PRD ref: `prd.md > Features and Behavior`, `prd.md > States and Boundaries`
   Spec ref: `spec.md > Components` (Explanation Service and Clause Renderer, Gemini Provider Adapter, Frontend App and Board), `spec.md > Verification Plan`, `spec.md > External Services and Dependencies`
   Build: Add Nudge/Area/Technique/Reasoning/Reveal, naked/hidden-single evidence displays, target masking, hint blocking for mismatch/conflict states, fallback labeling, and end-to-end wiring. Keep all factual explanation content server-rendered from approved clauses. Mock provider in all automated tests.
   Verify (mechanical): Run the full backend `pytest` and frontend `npm test -- --run` suites; cover all five stages, hidden target digit before Reveal, approved/invalid clause IDs, timeout/quota/unavailable-model fallback, no test network calls, mismatch hint blocking, AI/template source labels, and candidate refresh after applying a move. Manually inspect the end-to-end demo flow with the offline template.
-  Learner check: Play the demo path: request a hint, inspect its evidence through Reasoning, observe the template fallback label, reveal and enter the digit; confirm fresh analysis replaces old highlights.
+  Learner check: Completed in Chrome against the local backend in template mode. Played a real naked-single record through all five levels; Reasoning showed the Offline template label and blocker evidence, Reveal showed R1C4 = 6, applying it cleared the prior hint, and the refreshed grid produced another hint.
   Commit: `Add verified hint ladder and explanations`
 
 ## Hands-on Checkpoints
@@ -54,7 +54,7 @@ Build mode: fast
 - [x] Slice 1 engine evidence reviewed before its commit and before starting the API slice.
 - [x] Slice 2 API behavior reviewed before its commit and before starting the React slice.
 - [x] Early usable board explored after slice 3; learner approved the board during browser review.
-- [ ] Slice 4 hint and fallback behavior reviewed before its commit and final review.
+- [x] Slice 4 hint and fallback behavior reviewed before its commit and final review.
 - [ ] Final kick-the-tires exploration and feedback completed.
 
 ## Final Review
@@ -76,5 +76,6 @@ Activity mode: [record after build]
 ## Revisions
 
 - Slice 3 browser review was reported passed by the learner and approved. Six Vitest checks pass, the Vite production build succeeds, and the local Vite proxy served all five puzzles and backend candidates.
+- Slice 4 verification: backend `.venv\Scripts\python.exe -m pytest` passed (34 tests, 1 recorded Starlette/httpx deprecation warning); frontend `npm test -- --run` passed (8 tests); `npm run build` passed. Automated tests use mocks. The live Chrome flow used `EXPLANATION_PROVIDER=template`; API logs show the analysis, hint, and explanation requests without Gemini network calls. Mismatch blocking/recovery was also rechecked in the browser. `git diff --check` passed.
 - Slice 2 manual API checks passed in template mode; `pytest` passed (34 tests). Recorded Starlette deprecation warning: TestClient currently uses httpx; investigate the recommended `httpx2` migration during cleanup rather than suppressing it.
 - Added complete hidden-single position blockers and documented deterministic naked/hidden selection order after slice review identified missing proof detail; expanded regression tests and confirmed the solver suite passes.

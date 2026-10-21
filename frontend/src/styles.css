@@ -29,6 +29,17 @@ button { color: inherit; }
 .candidate-marks { width: 100%; height: 100%; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); align-items: center; justify-items: center; font-size: clamp(6px, 1.05vw, 10px); line-height: 1; color: #747d7a; }
 .sudoku-cell.conflict { background: #f6dddd; }
 .sudoku-cell.mismatch { outline: 2px solid #cf8a50; outline-offset: -3px; z-index: 2; }
+.sudoku-cell.hint-area { background: #e5f0f2; }
+.sudoku-cell.hint-blocker { background: #f1eee2; box-shadow: inset 0 0 0 1px #c3b17a; }
+.sudoku-cell.hint-candidate-position { background: #e0efea; box-shadow: inset 0 0 0 1px #70a394; }
+.sudoku-cell.hint-excluded-position { background: #eeece7; }
+.sudoku-cell.hint-target { background: #fff1d7; box-shadow: inset 0 0 0 3px #cc9952; z-index: 3; }
+.sudoku-cell.hint-target .candidate-marks { color: #936720; }
+.sudoku-cell.hint-target .masked-candidate { color: #936720; font-size: 15px; font-weight: 700; }
+.sudoku-cell.hint-target .eliminated-candidate { color: #aaa59a; text-decoration: line-through; }
+.hidden-candidate-marker { width: 100%; height: 100%; display: grid; place-items: center; font-size: 17px; font-weight: 700; color: #92713e; }
+.hidden-candidate-marker.excluded { color: #aaa59b; text-decoration: line-through; }
+.hint-reveal-digit { color: #9d6121; font-size: clamp(17px, 2.6vw, 28px); font-weight: 750; }
 .board-footer { margin-top: 14px; display: flex; justify-content: space-between; align-items: center; color: #8b8c84; font-size: 10px; }
 .legend { display: flex; gap: 18px; }
 .legend span { display: flex; align-items: center; gap: 6px; }
@@ -52,6 +63,27 @@ button { color: inherit; }
 .hint-button:not(:disabled):hover { background: #264f50; }
 .status { color: #7d837e; min-height: 33px; font: 12px/1.5 Georgia, serif; margin: 11px 0 0; }
 .status.warning { color: #a26436; }.status.success { color: #367164; }
+.hint-ladder { border: 1px solid #e7dfcf; background: #fffdf7; padding: 15px; border-radius: 8px; margin-top: 13px; }
+.ladder-heading { display: flex; justify-content: space-between; align-items: center; }
+.ladder-progress { height: 3px; background: #ece8df; border-radius: 4px; overflow: hidden; margin: 10px 0 13px; }
+.ladder-progress span { display: block; height: 100%; background: #c79957; transition: width .2s ease; }
+.hint-ladder h3 { font: 500 19px Georgia, serif; margin: 8px 0; }
+.hint-ladder p { color: #757971; font: 13px/1.55 Georgia, serif; margin: 7px 0; }
+.hint-ladder .hint-area-name { color: #3e7076; font: 600 12px/1.4 ui-sans-serif, system-ui, sans-serif; letter-spacing: .04em; }
+.text-button, .secondary-button { border: 0; background: none; color: #6d7e7a; font-size: 11px; cursor: pointer; padding: 4px; }
+.text-button:hover, .secondary-button:hover { color: #315f60; text-decoration: underline; }
+.source-badge { display: inline-block; padding: 5px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+.source-badge.ai { color: #286c65; background: #e2f0ea; }.source-badge.template { color: #836b43; background: #f4eddc; }
+.explanation-text { color: #424a46 !important; font-size: 14px !important; }
+.evidence-summary { border-top: 1px solid #ece8df; margin-top: 12px; padding-top: 7px; }
+.evidence-summary ul { max-height: 145px; overflow: auto; padding-left: 17px; margin: 7px 0; color: #77766e; font-size: 10px; line-height: 1.6; }
+.evidence-summary li strong { color: #4c6765; }
+.ladder-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.next-button, .apply-hint-button { border: 0; background: #315f60; color: white; border-radius: 6px; padding: 9px 11px; font-size: 11px; font-weight: 650; cursor: pointer; }
+.next-button:hover, .apply-hint-button:hover { background: #264f50; }
+.next-button:disabled { opacity: .5; cursor: wait; }
+.apply-hint-button { margin-top: 9px; background: #a67637; }.apply-hint-button:hover { background: #8b602d; }
+.return-button { margin-left: auto; }
 .notebook-note { border-top: 1px solid #ece8df; margin-top: 13px; padding-top: 17px; display: flex; gap: 10px; align-items: start; color: #a18e6e; }
 .notebook-note span { font-size: 18px; }
 .notebook-note p { margin: 1px 0 0; color: #929188; font: italic 12px/1.5 Georgia, serif; }

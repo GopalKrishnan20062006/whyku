@@ -14,3 +14,15 @@ export const analyzeGrid = (puzzleId, grid) => request('/api/analysis', {
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ puzzle_id: puzzleId, grid }),
 });
+
+export const getHint = (puzzleId, grid) => request('/api/hints', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ puzzle_id: puzzleId, grid }),
+});
+
+export const getExplanation = (puzzleId, grid) => request('/api/hints/explanation', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ puzzle_id: puzzleId, grid }),
+});
