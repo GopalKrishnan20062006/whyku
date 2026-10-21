@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Whyku app map</title>
+  <style>
+    :root { color-scheme: light; --paper: #f7f5ef; --ink: #263434; --muted: #65706c; --line: #d9ded8; --teal: #315f60; --amber: #a67637; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 system-ui, sans-serif; }
+    main { width: min(920px, 100% - 32px); margin: 36px auto 64px; }
+    h1, h2 { font-family: Georgia, serif; font-weight: 500; line-height: 1.2; }
+    h1 { font-size: clamp(2rem, 5vw, 3.1rem); margin: 8px 0; }
+    h2 { font-size: 1.45rem; margin: 30px 0 10px; }
+    p, li { max-width: 75ch; }
+    .eyebrow { color: var(--teal); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .lead { color: var(--muted); font: 1.15rem/1.6 Georgia, serif; }
+    .diagram { display: block; width: 100%; margin: 20px 0; border: 1px solid var(--line); border-radius: 12px; background: #fffdf8; }
+    .diagram text { fill: var(--ink); font: 15px system-ui, sans-serif; }
+    .diagram .small { fill: var(--muted); font-size: 12px; }
+    .diagram .box { fill: #f8f6ef; stroke: #b8c5be; stroke-width: 1.5; rx: 10; }
+    .diagram .trust { fill: #e8f1ef; stroke: var(--teal); }
+    .diagram .output { fill: #fbf0dc; stroke: var(--amber); }
+    .route, .pointers, .practice { padding-left: 22px; }
+    code, kbd { border-radius: 4px; background: #ecebe4; padding: 2px 5px; font: .9em ui-monospace, monospace; overflow-wrap: anywhere; }
+    .route li, .pointers li { margin: 12px 0; }
+    details { margin: 18px 0; border: 1px solid var(--line); border-radius: 8px; background: #fffdf8; padding: 12px 16px; }
+    summary { color: var(--teal); font-weight: 650; cursor: pointer; }
+    pre { overflow: auto; padding: 14px; border-radius: 8px; background: #f0efe8; }
+    footer { border-top: 1px solid var(--line); margin-top: 32px; padding-top: 14px; color: var(--muted); font-size: .9rem; }
+    a { color: #255d5e; text-underline-offset: 3px; }
+    :focus-visible { outline: 3px solid #b27635; outline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Whyku · code tour reference</p>
+    <h1>How a verified hint reaches the board</h1>
+    <p class="lead">Whyku helps Sudoku players understand a supported next move. Python checks the grid and proves the deduction; Gemini may arrange approved explanation clauses, while FastAPI renders the factual wording. React displays the returned record and explanation.</p>
+
+    <svg class="diagram" viewBox="0 0 900 300" role="img" aria-labelledby="diagram-title diagram-desc">
+      <title id="diagram-title">Hint request and evidence flow</title>
+      <desc id="diagram-desc">The player requests a hint in React. The API sends the current grid to the Python engine, which returns a verified deduction. For the reasoning stage, the explanation service asks Gemini to select approved clause IDs, validates them, and renders server-approved text or a template. React displays the evidence and explanation.</desc>
+      <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#71827b" /></marker></defs>
+      <rect class="box" x="28" y="92" width="172" height="104" />
+      <text x="48" y="127">Player / React</text><text class="small" x="48" y="153">request hint · render</text><text class="small" x="48" y="172">board evidence</text>
+      <rect class="box trust" x="267" y="38" width="190" height="104" />
+      <text x="287" y="76">FastAPI</text><text class="small" x="287" y="101">validate grid · routes</text><text class="small" x="287" y="120">server owns trusted state</text>
+      <rect class="box trust" x="267" y="180" width="190" height="88" />
+      <text x="287" y="216">Python engine</text><text class="small" x="287" y="241">candidates · verified singles</text>
+      <rect class="box" x="543" y="38" width="160" height="104" />
+      <text x="563" y="76">Gemini provider</text><text class="small" x="563" y="101">approved clause IDs</text><text class="small" x="563" y="120">optional · replaceable</text>
+      <rect class="box output" x="543" y="180" width="324" height="88" />
+      <text x="563" y="216">Validated wording or offline template</text><text class="small" x="563" y="241">all claims rendered from server facts</text>
+      <path d="M200 132 L257 99" fill="none" stroke="#71827b" stroke-width="2" marker-end="url(#arrow)" />
+      <path d="M362 142 L362 171" fill="none" stroke="#71827b" stroke-width="2" marker-end="url(#arrow)" />
+      <path d="M457 86 L533 86" fill="none" stroke="#71827b" stroke-width="2" marker-end="url(#arrow)" />
+      <path d="M623 142 L623 171" fill="none" stroke="#71827b" stroke-width="2" marker-end="url(#arrow)" />
+      <path d="M543 224 L467 224 L467 163 L200 163" fill="none" stroke="#71827b" stroke-width="2" marker-end="url(#arrow)" />
+    </svg>
+
+    <h2>Follow one hint in the code</h2>
+    <p>This is a reference route through the implementation; it is not a record of an interactive code tour.</p>
+    <ol class="route">
+      <li><strong>React action:</strong> <code>frontend/src/App.jsx</code>, <code>requestHint</code> and <code>advanceHint</code> start the ladder and request the reasoning. <code>SudokuBoard</code> renders the backend candidate/evidence records, and <code>enterDigit</code> clears old evidence and refreshes analysis.</li>
+      <li><strong>HTTP boundary:</strong> <code>frontend/src/api.js</code>, <code>getHint</code> and <code>getExplanation</code> send only the puzzle ID and current grid. <code>backend/app/main.py</code>, routes in <code>create_app</code>, validate and re-analyze each request.</li>
+      <li><strong>Proof and wording:</strong> <code>backend/app/sudoku/engine.py</code>, <code>analyze_grid</code> and <code>backend/app/sudoku/singles.py</code>, <code>find_singles</code>/<code>validate_deduction</code>, produce and verify the move. <code>backend/app/explanations/service.py</code>, <code>ExplanationService.explain</code>, checks selected clause IDs and falls back to the deterministic template.</li>
+    </ol>
+
+    <h2>To change this, start here</h2>
+    <ul class="pointers">
+      <li>Hint-stage wording and evidence display: <code>frontend/src/App.jsx</code>, <code>hintNudge</code>, <code>EvidenceSummary</code>, and the ladder markup.</li>
+      <li>Candidate rules and deduction evidence: <code>backend/app/sudoku/candidates.py</code> and <code>backend/app/sudoku/singles.py</code>; add a regression case in <code>backend/tests/test_engine.py</code>.</li>
+      <li>Approved explanation content and fallback: <code>backend/app/explanations/renderer.py</code>; provider behavior: <code>backend/app/explanations/gemini.py</code>.</li>
+    </ul>
+
+    <h2>A practice to reuse</h2>
+    <p class="practice">Whyku’s spec gave the solver and explanation provider separate responsibilities, then tests checked deductions and provider failures independently. On another AI-assisted project, write down which component is allowed to decide a result, define the data crossing that boundary, and test the decision without the language model before adding generated wording.</p>
+
+    <details>
+      <summary>Run Whyku locally (template mode needs no API key)</summary>
+      <p>Start these from the repository root in two PowerShell terminals. Requires Python 3.12+, Node.js 22.12+, and npm.</p>
+      <pre><code>cd backend
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+$env:EXPLANATION_PROVIDER = "template"
+uvicorn app.main:app --reload</code></pre>
+      <pre><code>cd frontend
+npm ci
+npm run dev</code></pre>
+      <p>Open the Vite URL printed in the frontend terminal. For live Gemini mode, configure <code>GEMINI_API_KEY</code> in the ignored <code>backend/.env</code>; never place it in frontend files.</p>
+    </details>
+
+    <footer>Source snapshot: commit <code>2be64bc</code>. This map is an offline reference and may drift as the code changes. Reopen it from <code>devpost/app-map.html</code>.</footer>
+  </main>
+</body>
+</html>
