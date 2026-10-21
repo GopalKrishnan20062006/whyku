@@ -19,14 +19,14 @@ Build mode: fast
   Learner check: Inspect the pytest results and one deduction fixture; confirm the recorded target and evidence match what the current grid proves.
   Commit: `Build verified Sudoku engine`
 
-- [ ] **2. API validates grids and returns safe hints/explanations**
+- [x] **2. API validates grids and returns safe hints/explanations**
   Becomes usable: A local API loads curated puzzles, returns trusted analysis and hint states, and can render a verified explanation or offline fallback.
   Why now: The API makes the solver's guarantees an explicit boundary before the browser consumes them.
   PRD ref: `prd.md > The Core Journey`, `prd.md > States and Boundaries`
   Spec ref: `spec.md > Components` (FastAPI Routes), `spec.md > Data Model`, `spec.md > Verification Plan`
   Build: Add schemas, curated puzzle data, puzzle/analysis/hint/explanation routes, backend validation of dimensions, values, puzzle IDs and givens, and server-side candidate recomputation. Add the mock provider, configurable Gemini adapter, approved clause validation/rendering, and deterministic offline fallback. Ensure mismatch blocks hints/provider calls without revealing solution digits.
   Verify (mechanical): From `backend/`, run `pytest`; TestClient/service cases cover malformed/forged boards, rule conflict versus mismatch, no solution leakage, no supported single, verified endpoint evidence, valid/invalid clause selections, provider timeout/quota/unavailable fallback, and prove tests use mocks without network calls.
-  Learner check: Call the local API for a clean board, then a locally legal but solution-wrong entry; inspect that candidates remain available while hints are blocked. Inspect a mocked explanation failure and confirm the returned fallback is server-rendered.
+  Learner check: Verified live template-mode API responses for a clean board, a locally legal but solution-wrong entry, blocked hints, malformed-grid rejection, and recovery after erasure. Template explanation was server-rendered; mismatch response exposed only coordinates.
   Commit: `Expose validated API and explanation service`
 
 - [ ] **3. Playable board uses backend analysis**
@@ -51,8 +51,8 @@ Build mode: fast
 
 ## Hands-on Checkpoints
 
-- [ ] Slice 1 engine evidence reviewed before its commit and before starting the API slice.
-- [ ] Slice 2 API behavior reviewed before its commit and before starting the React slice.
+- [x] Slice 1 engine evidence reviewed before its commit and before starting the API slice.
+- [x] Slice 2 API behavior reviewed before its commit and before starting the React slice.
 - [ ] Early usable board explored after slice 3; feedback can shape the hint interaction.
 - [ ] Slice 4 hint and fallback behavior reviewed before its commit and final review.
 - [ ] Final kick-the-tires exploration and feedback completed.
@@ -75,4 +75,5 @@ Activity mode: [record after build]
 
 ## Revisions
 
+- Slice 2 manual API checks passed in template mode; `pytest` passed (34 tests). Recorded Starlette deprecation warning: TestClient currently uses httpx; investigate the recommended `httpx2` migration during cleanup rather than suppressing it.
 - Added complete hidden-single position blockers and documented deterministic naked/hidden selection order after slice review identified missing proof detail; expanded regression tests and confirmed the solver suite passes.
