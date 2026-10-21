@@ -8,6 +8,8 @@
 
 # Python local environment and test artifacts
 /backend/.venv/
+/frontend/node_modules/
+/frontend/dist/
 __pycache__/
 .pytest_cache/
 *.py[cod]

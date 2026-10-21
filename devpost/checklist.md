@@ -29,14 +29,14 @@ Build mode: fast
   Learner check: Verified live template-mode API responses for a clean board, a locally legal but solution-wrong entry, blocked hints, malformed-grid rejection, and recovery after erasure. Template explanation was server-rendered; mismatch response exposed only coordinates.
   Commit: `Expose validated API and explanation service`
 
-- [ ] **3. Playable board uses backend analysis**
+- [x] **3. Playable board uses backend analysis**
   Becomes usable: The browser displays curated Sudoku puzzles and supports selection, keyboard/mouse entry, erase, candidates, and backend status updates.
   Why now: It gives the tested backend a real interactive surface while preserving Python as the only Sudoku logic source.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Screens and Layout`, `prd.md > Features and Behavior`
   Spec ref: `spec.md > Look and Feel`, `spec.md > Components` (Frontend App and Board, Controls, and Hint Ladder), `spec.md > File Structure`
   Build: Scaffold React/Vite in JavaScript/JSX with Tailwind; add board, selector, controls, selected-cell behavior, keyboard and mouse entry/erase, API client, immediate backend analysis, visible candidates/conflict indicators/statuses, and request-sequence handling for stale responses.
   Verify (mechanical): Run `npm test -- --run` from `frontend/`; Vitest covers givens locked, entry/erase, selection retention, backend candidate rendering, mismatch warnings, and stale responses. Start both local dev processes and confirm the board loads.
-  Learner check: Open the board, switch puzzles, enter and erase a digit, and confirm the selected cell stays put while candidate marks update.
+  Learner check: Learner confirmed the browser review passed: puzzle switching resets entries, keyboard and number-pad entry retain selection, candidates refresh after erasure, mismatches are flagged and block hints without revealing answers, givens stay locked, and cell/unit highlights are clear.
   Commit: `Build playable backend-driven grid`
 
 - [ ] **4. Evidence ladder and end-to-end demo**
@@ -53,7 +53,7 @@ Build mode: fast
 
 - [x] Slice 1 engine evidence reviewed before its commit and before starting the API slice.
 - [x] Slice 2 API behavior reviewed before its commit and before starting the React slice.
-- [ ] Early usable board explored after slice 3; feedback can shape the hint interaction.
+- [x] Early usable board explored after slice 3; learner approved the board during browser review.
 - [ ] Slice 4 hint and fallback behavior reviewed before its commit and final review.
 - [ ] Final kick-the-tires exploration and feedback completed.
 
@@ -75,5 +75,6 @@ Activity mode: [record after build]
 
 ## Revisions
 
+- Slice 3 browser review was reported passed by the learner and approved. Six Vitest checks pass, the Vite production build succeeds, and the local Vite proxy served all five puzzles and backend candidates.
 - Slice 2 manual API checks passed in template mode; `pytest` passed (34 tests). Recorded Starlette deprecation warning: TestClient currently uses httpx; investigate the recommended `httpx2` migration during cleanup rather than suppressing it.
 - Added complete hidden-single position blockers and documented deterministic naked/hidden selection order after slice review identified missing proof detail; expanded regression tests and confirmed the solver suite passes.
