@@ -42,6 +42,7 @@ def create_app(
     app.state.explanation_service = ExplanationService(
         selected_provider,
         timeout_seconds=settings.explanation_timeout_seconds,
+        sensitive_values=(settings.gemini_api_key,),
     )
 
     @app.get("/api/puzzles", response_model=list[PuzzleSummary])

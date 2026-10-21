@@ -388,7 +388,7 @@ export default function App() {
                 {hint.level === 1 && <><h3>A gentle nudge</h3><p>{hintNudge(hint.deduction)}</p></>}
                 {hint.level === 2 && <><h3>Look in this area</h3><p className="hint-area-name">{areaDescription(hint.deduction)}</p><p>The board shading marks the relevant unit or units.</p></>}
                 {hint.level === 3 && <><h3>{techniqueDescription(hint.deduction)}</h3><p>Compare the highlighted candidates and evidence cells. The digit remains hidden.</p></>}
-                {hint.level === 4 && <><h3>Why this move works</h3><span className={`source-badge ${hint.source}`}>{hint.source === 'ai' ? 'AI wording · verified clauses' : 'Offline template'}</span><p className="explanation-text">{hint.explanation}</p><EvidenceSummary deduction={hint.deduction} /></>}
+                {hint.level === 4 && <><h3>Why this move works</h3><span className={`source-badge ${hint.source}`}>{hint.source === 'gemini' ? 'Gemini · approved clauses' : 'Offline template'}</span><p className="explanation-text">{hint.explanation}</p><EvidenceSummary deduction={hint.deduction} /></>}
                 {hint.level === 3 && error && <p className="status warning">{error} You can try the explanation again.</p>}
                 {hint.level === 5 && <><h3>Reveal</h3><p>Cell R{hint.deduction.target[0] + 1}C{hint.deduction.target[1] + 1} can take <strong>{hint.deduction.digit}</strong>.</p><button className="apply-hint-button" onClick={() => enterDigit(...hint.deduction.target, hint.deduction.digit)}>Enter {hint.deduction.digit} in the grid</button></>}
                 <div className="ladder-actions">

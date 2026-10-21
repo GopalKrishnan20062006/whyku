@@ -93,5 +93,5 @@ class ExplanationResponse(StrictModel):
     message: str | None
     deduction: DeductionResponse | None
     explanation: str | None
-    source: Literal["ai", "template"] | None
+    source: Literal["gemini", "template"] | None
     clause_ids: list[str]

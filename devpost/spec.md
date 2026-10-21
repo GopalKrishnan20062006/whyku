@@ -121,19 +121,19 @@ Implements **prd.md > Progressive hints and visual evidence** and **States and B
 
 An async provider interface accepts verified deduction facts and an approved clause catalog, returning clause IDs only. The server builds the catalog and controls all facts; model selections must be allowed for the current deduction, unique, and within a small maximum. The renderer maps approved IDs to server-authored sentence fragments and inserts verified values. It does not display arbitrary model prose.
 
-The service calls a provider only at the Reasoning level after fresh server validation. It rejects missing, unknown, repeated, or otherwise invalid clause selections. Any missing key, service error/quota, timeout, refusal, parse/schema problem, or invalid selection produces a server-rendered template and source=template. A valid selection produces server-rendered wording and source=ai. The template requires no network or provider package.
+The service calls a provider only at the Reasoning level after fresh server validation. It rejects missing, unknown, repeated, or otherwise invalid clause selections. Any missing key, service error/quota, timeout, refusal, parse/schema problem, or invalid selection produces a server-rendered template and source=template. A valid Gemini selection produces server-rendered wording and source=gemini. The template requires no network or provider package.
 
 Implements **prd.md > Progressive hints and visual evidence** and **Product Decisions**.
 
 ### Gemini Provider Adapter
 
-Use google-genai with a structured-output schema whose enum values are only approved clause IDs for the current deduction. Configure the SDK request timeout to the environment value in milliseconds and disable retry attempts so a quota error immediately takes the fallback path. Config:
+Use google-genai with a structured-output schema whose enum values are only approved clause IDs for the current deduction. Disable retry attempts so a quota error immediately takes the fallback path. FastAPI enforces the configured timeout; the SDK HTTP timeout is at least 10 seconds because the API rejects shorter declared deadlines. Config:
 
 ~~~text
 EXPLANATION_PROVIDER=gemini
 GEMINI_API_KEY=             # secret; backend/.env only
 GEMINI_MODEL=gemini-3.5-flash-lite
-EXPLANATION_TIMEOUT_SECONDS=8
+GEMINI_TIMEOUT=8
 ~~~
 
 Commit `backend/.env.example` with these variable names and safe sample defaults, leaving `GEMINI_API_KEY` blank or clearly marked as a local secret placeholder. Document that developers copy it to `backend/.env` and add their own key there. Never commit `.env`, real keys, or other secret values; the repository `.gitignore` excludes `.env` and `.env.*` while allowing `.env.example`.
@@ -166,7 +166,7 @@ No database, browser storage, accounts, or backend game sessions. The browser ke
 - **Board request:** puzzle ID and 9×9 integer grid (0 for empty). Server checks dimensions, digit range, puzzle ID, and givens.
 - **Analysis response:** candidate digits for cells, rule-conflict cells/reasons, solution-mismatch coordinates, completion state, and whether/why hints are enabled. Never return the expected answer for a mismatching cell.
 - **Deduction record:** technique, target cell/digit, unit, supporting candidates/positions or eliminations, and display evidence. Produced and validated by Python; held by React only for the current hint; never accepted back as trusted data.
-- **Approved explanation data:** server-generated facts and clause allow-list for a deduction; returned provider clause IDs; server-rendered text; source (ai or template). No free-form model prose reaches the UI.
+- **Approved explanation data:** server-generated facts and clause allow-list for a deduction; returned provider clause IDs; server-rendered text; source (gemini or template). No free-form model prose reaches the UI.
 - **Configuration:** provider, model, timeout, and key from backend environment. No secret is sent to the browser.
 
 Each entry/erase updates React's grid and triggers backend analysis. Switching puzzles resets it; reload returns to default. No progress is saved.
@@ -257,10 +257,10 @@ Each slice is reviewed and its stated tests pass before work proceeds to the nex
 ### Gemini Developer API
 
 - **Call:** Google GenAI Python SDK, models.generate_content; underlying request is POST https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent.
-- **Configuration:** GEMINI_API_KEY for API-key auth; GEMINI_MODEL defaults to gemini-3.5-flash-lite; EXPLANATION_TIMEOUT_SECONDS defaults to 8. The key stays in backend/.env, which Git ignores.
+- **Configuration:** GEMINI_API_KEY for API-key auth; GEMINI_MODEL defaults to gemini-3.5-flash-lite; GEMINI_TIMEOUT defaults to 8 seconds. EXPLANATION_TIMEOUT_SECONDS remains a backward-compatible alias. The key stays in backend/.env, which Git ignores.
 - **Input:** one current deduction's verified facts plus approved clause IDs/descriptions and brief style direction. Do not send the full grid, solution, player history, or personal data.
 - **Output:** JSON containing an ordered list of clause IDs. Schema restricts values to the server-provided allow-list. FastAPI independently checks the result, then renders approved text; it never displays raw model output.
-- **Failure/latency:** SDK timeout is set to 8 seconds and retries are disabled. Missing model/key, quota (including 429), service/network error, timeout, refusal, invalid JSON, or disallowed clause ID returns the offline template immediately.
+- **Failure/latency:** FastAPI enforces an 8-second default timeout; the Gemini SDK timeout is at least 10 seconds to meet the API's minimum declared deadline, and retries are disabled. Missing model/key, quota (including 429), service/network error, timeout, refusal, invalid JSON, or disallowed clause ID returns the offline template immediately with a safe diagnostic in backend logs.
 - **Quota and price:** Google's current pricing lists free text input/output for this model, but exact per-project RPM/TPM/RPD limits vary by model and account and can change; check AI Studio for the active project before the demo. The free tier may use submitted data to improve Google products, which the learner accepted for minimal puzzle facts and clause IDs. [Model details](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite), [GenerateContent request/response](https://ai.google.dev/api/generate-content), [structured output](https://ai.google.dev/gemini-api/docs/generate-content/structured-output), [pricing and data-use note](https://ai.google.dev/gemini-api/docs/pricing.md), [rate limits](https://ai.google.dev/gemini-api/docs/rate-limits?authuser=2), [Python SDK retry/timeout options](https://googleapis.github.io/python-genai/genai.html).
 
 No other runtime external service. npm and Python package registries are used only when installing dependencies. The offline template has no network dependency.

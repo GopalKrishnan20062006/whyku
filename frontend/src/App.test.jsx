@@ -184,6 +184,21 @@ describe('playable grid', () => {
     await waitFor(() => expect(getHint.mock.calls.at(-1)[1][4][4]).toBe(5));
   });
 
+  it('labels a successful Gemini explanation explicitly', async () => {
+    const user = userEvent.setup();
+    getExplanation.mockResolvedValue({
+      status: 'available', deduction: nakedDeduction,
+      explanation: 'This cell has one remaining candidate.',
+      source: 'gemini', clause_ids: ['naked.cell_has_one_candidate', 'naked.peers_rule_out_others'],
+    });
+    await openApp();
+    await user.click(screen.getByRole('button', { name: /get hint/i }));
+    await user.click(screen.getByRole('button', { name: /next hint/i }));
+    await user.click(screen.getByRole('button', { name: /next hint/i }));
+    await user.click(screen.getByRole('button', { name: /next hint/i }));
+    expect(await screen.findByText('Gemini · approved clauses')).toBeInTheDocument();
+  });
+
   it('renders hidden-single unit positions and exclusions from the server record', async () => {
     const user = userEvent.setup();
     getHint.mockResolvedValue({ status: 'available', deduction: hiddenDeduction, analysis: analysis() });

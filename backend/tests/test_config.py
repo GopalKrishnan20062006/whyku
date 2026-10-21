@@ -5,6 +5,7 @@ def test_default_model_and_timeout_are_available_without_api_key(monkeypatch):
     monkeypatch.delenv("EXPLANATION_PROVIDER", raising=False)
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.delenv("GEMINI_MODEL", raising=False)
+    monkeypatch.delenv("GEMINI_TIMEOUT", raising=False)
     monkeypatch.delenv("EXPLANATION_TIMEOUT_SECONDS", raising=False)
 
     settings = Settings.from_environment()
@@ -17,7 +18,7 @@ def test_default_model_and_timeout_are_available_without_api_key(monkeypatch):
 
 def test_model_and_timeout_are_environment_configurable(monkeypatch):
     monkeypatch.setenv("GEMINI_MODEL", "a-configured-model")
-    monkeypatch.setenv("EXPLANATION_TIMEOUT_SECONDS", "2.5")
+    monkeypatch.setenv("GEMINI_TIMEOUT", "2.5")
 
     settings = Settings.from_environment()
 
@@ -25,6 +26,20 @@ def test_model_and_timeout_are_environment_configurable(monkeypatch):
     assert settings.explanation_timeout_seconds == 2.5
 
 
+def test_legacy_timeout_setting_remains_supported(monkeypatch):
+    monkeypatch.delenv("GEMINI_TIMEOUT", raising=False)
+    monkeypatch.setenv("EXPLANATION_TIMEOUT_SECONDS", "3.5")
+
+    assert Settings.from_environment().explanation_timeout_seconds == 3.5
+
+
+def test_gemini_timeout_takes_precedence_over_legacy_timeout(monkeypatch):
+    monkeypatch.setenv("GEMINI_TIMEOUT", "4")
+    monkeypatch.setenv("EXPLANATION_TIMEOUT_SECONDS", "2")
+
+    assert Settings.from_environment().explanation_timeout_seconds == 4
+
+
 def test_invalid_timeout_uses_eight_second_default(monkeypatch):
-    monkeypatch.setenv("EXPLANATION_TIMEOUT_SECONDS", "inf")
+    monkeypatch.setenv("GEMINI_TIMEOUT", "inf")
     assert Settings.from_environment().explanation_timeout_seconds == 8

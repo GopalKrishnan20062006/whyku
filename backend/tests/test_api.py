@@ -30,6 +30,8 @@ class RecordingProvider:
             raise RuntimeError("model unavailable")
         if self.mode == "missing_key":
             raise RuntimeError("Gemini API key is not configured")
+        if self.mode == "secret_failure":
+            raise RuntimeError("quota denied key=test-secret-123 headers={'x-goog-api-key': 'test-secret-123'}")
         if self.mode == "slow":
             import asyncio
             await asyncio.sleep(0.1)
@@ -172,13 +174,13 @@ def test_hint_endpoint_returns_backend_verified_deduction():
     assert data["deduction"]["digit"] in range(1, 10)
 
 
-def test_ai_selection_only_reorders_server_rendered_approved_clauses():
+def test_gemini_selection_only_reorders_server_rendered_approved_clauses():
     provider = RecordingProvider()
     with _client(provider=provider) as client:
         response = client.post("/api/hints/explanation", json=_payload())
     data = response.json()
 
-    assert data["source"] == "ai"
+    assert data["source"] == "gemini"
     assert len(data["clause_ids"]) == 2
     assert data["explanation"] == (
         "Every other digit is ruled out by values already in its row, column, or box. "
@@ -209,3 +211,21 @@ def test_provider_quota_unavailable_timeout_and_missing_provider_use_offline_tem
         with _client(provider=provider, timeout=timeout) as client:
             response = client.post("/api/hints/explanation", json=_payload())
         assert response.json()["source"] == "template"
+
+
+def test_provider_failure_is_logged_safely_and_falls_back(caplog):
+    from app.config import Settings
+    from app.main import create_app
+
+    provider = RecordingProvider("secret_failure")
+    app = create_app(provider=provider, settings=Settings(gemini_api_key="test-secret-123"))
+    with TestClient(app) as client:
+        response = client.post("/api/hints/explanation", json=_payload())
+
+    assert response.status_code == 200
+    assert response.json()["source"] == "template"
+    logs = caplog.text
+    assert "RuntimeError" in logs
+    assert "quota denied" in logs
+    assert "test-secret-123" not in logs
+    assert "headers=[REDACTED]" in logs

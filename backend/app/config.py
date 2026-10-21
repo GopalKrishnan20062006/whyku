@@ -21,7 +21,10 @@ class Settings:
     @classmethod
     def from_environment(cls) -> "Settings":
         try:
-            timeout = float(os.getenv("EXPLANATION_TIMEOUT_SECONDS", "8"))
+            timeout_value = os.getenv("GEMINI_TIMEOUT")
+            if timeout_value is None:
+                timeout_value = os.getenv("EXPLANATION_TIMEOUT_SECONDS", "8")
+            timeout = float(timeout_value)
             if timeout <= 0 or not math.isfinite(timeout):
                 timeout = 8.0
         except ValueError:

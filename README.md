@@ -33,7 +33,7 @@ Open the URL printed by Vite, normally `http://localhost:5173`. The frontend pro
 
 ## Optional Gemini explanations
 
-The template mode above is offline and needs no credentials. To enable Gemini, copy `backend/.env.example` to `backend/.env` and set `GEMINI_API_KEY` there. The backend reads the optional `GEMINI_MODEL` and `EXPLANATION_TIMEOUT_SECONDS` settings from that file. Never put the key in frontend files or commit `.env`.
+The template mode above is offline and needs no credentials. To enable Gemini, copy `backend/.env.example` to `backend/.env` and set `GEMINI_API_KEY` there. The backend reads the optional `GEMINI_MODEL` and `GEMINI_TIMEOUT` settings from that file. `GEMINI_TIMEOUT` defaults to 8 seconds; the previous `EXPLANATION_TIMEOUT_SECONDS` name is still accepted for compatibility. Never put the key in frontend files or commit `.env`.
 
 ## Checks
 

@@ -35,7 +35,6 @@ class GeminiProvider:
                 }
             },
             "required": ["clause_ids"],
-            "additionalProperties": False,
         }
         prompt = json.dumps(
             {
@@ -51,7 +50,10 @@ class GeminiProvider:
         client = genai.Client(
             api_key=self._settings.gemini_api_key,
             http_options=types.HttpOptions(
-                timeout=int(self._settings.explanation_timeout_seconds * 1000),
+                # Gemini rejects caller deadlines below 10 seconds. The service
+                # still enforces GEMINI_TIMEOUT (8 seconds by default) around
+                # this client call.
+                timeout=int(max(self._settings.explanation_timeout_seconds, 10.0) * 1000),
                 retry_options=types.HttpRetryOptions(attempts=1),
             ),
         )
