@@ -174,6 +174,18 @@ def test_hint_endpoint_returns_backend_verified_deduction():
     assert data["deduction"]["digit"] in range(1, 10)
 
 
+def test_repeated_hint_requests_for_unchanged_board_return_same_deduction():
+    body = _payload(PUZZLES[0])
+    with _client() as client:
+        first = client.post("/api/hints", json=body)
+        second = client.post("/api/hints", json=body)
+
+    assert first.status_code == second.status_code == 200
+    assert first.json() == second.json()
+    assert first.json()["deduction"]["target"] == [0, 3]
+    assert first.json()["deduction"]["digit"] == 6
+
+
 def test_gemini_selection_only_reorders_server_rendered_approved_clauses():
     provider = RecordingProvider()
     with _client(provider=provider) as client:
